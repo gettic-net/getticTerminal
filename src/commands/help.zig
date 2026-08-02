@@ -1,38 +1,64 @@
 const std = @import("std");
-const terminal = @import("../utils/terminal.zig");
+const constants = @import("../constants.zig");
 
 pub fn execute() !void {
-    try terminal.baslik("GETTIC KOMUTLARI");
+    const out = std.io.getStdOut().writer();
 
-    try komut("gettic signup", "Yeni hesap oluşturur.");
-    try komut("gettic login", "Hesabınıza giriş yapar.");
-    try komut("gettic login new", "Yeni bir hesap ekler.");
-    try komut("gettic start", "Gettic Terminal'i başlatır.");
-    try komut("gettic logout", "Çıkış yapar.");
-    try komut("gettic whoami", "Aktif hesabı gösterir.");
-
-    try terminal.bosSatir();
-
-    try komut("gettic chat @kullanıcı", "Sohbet başlatır.");
-    try komut("gettic friends list", "Arkadaş listesini gösterir.");
-    try komut("gettic friend requests", "Arkadaşlık isteklerini gösterir.");
-
-    try terminal.bosSatir();
-
-    try komut("gettic profile", "Profil bilgilerini gösterir.");
-    try komut("gettic settings", "Ayarları açar.");
-    try komut("gettic memory", "Bellek kullanımını gösterir.");
-    try komut("gettic devices", "Bağlı cihazları listeler.");
-
-    try terminal.bosSatir();
-
-    try komut("gettic update", "Gettic'i günceller.");
-    try komut("gettic diagnostics", "Sistem kontrolü yapar.");
-    try komut("gettic info", "Uygulama bilgilerini gösterir.");
-    try komut("gettic exit", "Gettic'i kapatır.");
-}
-
-fn komut(ad: []const u8, aciklama: []const u8) !void {
-    const stdout = std.io.getStdOut().writer();
-    try stdout.print("  {s:<35} {s}\n", .{ ad, aciklama });
+    try out.print(
+        \\=========================================================
+        \\                {s} Terminal
+        \\                Sürüm : {s}
+        \\=========================================================
+        \\
+        \\Kullanım:
+        \\  gettic <komut> [seçenek]
+        \\
+        \\Temel Komutlar
+        \\---------------------------------------------------------
+        \\  help                     Yardım ekranını gösterir
+        \\  signup                   Yeni hesap oluşturur
+        \\  login                    Hesaba giriş yapar
+        \\  logout                   Oturumu kapatır
+        \\  start                    Gettic Terminal'i başlatır
+        \\  exit                     Uygulamadan çıkar
+        \\
+        \\Sohbet
+        \\---------------------------------------------------------
+        \\  chat @kullanıcı          Kullanıcı ile sohbet açar
+        \\  friends list             Arkadaş listesini gösterir
+        \\  friends add @kullanıcı   Arkadaşlık isteği gönderir
+        \\  friends delete @kullanıcı
+        \\                           Arkadaşı siler
+        \\  friend requests          Gelen istekleri gösterir
+        \\
+        \\Hesap
+        \\---------------------------------------------------------
+        \\  profile                  Profili gösterir
+        \\  settings                 Ayarlar
+        \\  account delete           Hesabı siler
+        \\  block @kullanıcı         Kullanıcıyı engeller
+        \\
+        \\Sistem
+        \\---------------------------------------------------------
+        \\  memory                   Bellek kullanımını gösterir
+        \\  memory reset             Tüm yerel verileri siler
+        \\  devices                  Giriş yapılan cihazlar
+        \\  sessions                 Aktif oturumlar
+        \\  ping                     Sunucu gecikmesini ölçer
+        \\  diagnostics              Sistem tanılama
+        \\  update                   Güncelleme kontrolü
+        \\  info                     Gettic bilgileri
+        \\
+        \\GitHub:
+        \\  {s}
+        \\
+        \\=========================================================
+        \\
+    ,
+        .{
+            constants.APP_NAME,
+            constants.APP_VERSION,
+            constants.GITHUB,
+        },
+    );
 }
