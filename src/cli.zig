@@ -1,76 +1,118 @@
 const std = @import("std");
 
-pub fn start(allocator: std.mem.Allocator) !void {
-    _ = allocator;
+const commands = @import("commands/mod.zig");
 
-    try ekraniGoster();
+pub fn run(
+    allocator: std.mem.Allocator,
+    args: []const []const u8,
+) !void {
 
-    var stdin = std.io.getStdIn().reader();
-    var stdout = std.io.getStdOut().writer();
-
-    var buffer: [1024]u8 = undefined;
-
-    while (true) {
-        try stdout.print("\ngettic > ", .{});
-
-        const satir = try stdin.readUntilDelimiterOrEof(&buffer, '\n');
-
-        if (satir == null)
-            break;
-
-        const komut = std.mem.trim(u8, satir.?, " \r\n\t");
-
-        if (komut.len == 0)
-            continue;
-
-        if (std.mem.eql(u8, komut, "gettic exit")) {
-            try stdout.print("\nGettic Terminal kapatılıyor...\n", .{});
-            break;
-        }
-
-        if (std.mem.eql(u8, komut, "gettic help")) {
-            try yardimYaz(stdout);
-            continue;
-        }
-
-        try stdout.print(
-            "\nBilinmeyen komut.\nYardım almak için 'gettic help' yazın.\n",
-            .{},
-        );
+    if (args.len == 0) {
+        try commands.help.execute();
+        return;
     }
-}
 
-fn ekraniGoster() !void {
-    const stdout = std.io.getStdOut().writer();
+    const cmd = args[0];
 
-    try stdout.print(
-        \\╔══════════════════════════════════════╗
-        \\║                                      ║
-        \\║          GETTIC TERMINAL             ║
-        \\║              STABLE                  ║
-        \\║                                      ║
-        \\╚══════════════════════════════════════╝
-        \\
-        \\Gettic Terminal'e hoş geldiniz.
-        \\Yardım almak için:
-        \\
-        \\gettic help
-        \\
-    , .{});
-}
+    if (std.mem.eql(u8, cmd, "help")) {
+        try commands.help.execute();
+        return;
+    }
 
-fn yardimYaz(writer: anytype) !void {
-    try writer.print(
-        \\
-        \\════════════ KOMUTLAR ════════════
-        \\
-        \\gettic signup
-        \\gettic login
-        \\gettic start
-        \\gettic logout
-        \\gettic info
-        \\gettic update
-        \\gettic exit
-        \\
-    , .{});
+    if (std.mem.eql(u8, cmd, "login")) {
+        try commands.login.execute(allocator, args[1..]);
+        return;
+    }
+
+    if (std.mem.eql(u8, cmd, "signup")) {
+        try commands.signup.execute(allocator, args[1..]);
+        return;
+    }
+
+    if (std.mem.eql(u8, cmd, "start")) {
+        try commands.start.execute(allocator);
+        return;
+    }
+
+    if (std.mem.eql(u8, cmd, "logout")) {
+        try commands.logout.execute(allocator);
+        return;
+    }
+
+    if (std.mem.eql(u8, cmd, "chat")) {
+        try commands.chat.execute(allocator, args[1..]);
+        return;
+    }
+
+    if (std.mem.eql(u8, cmd, "friends")) {
+        try commands.friends.execute(allocator, args[1..]);
+        return;
+    }
+
+    if (std.mem.eql(u8, cmd, "block")) {
+        try commands.block.execute(allocator, args[1..]);
+        return;
+    }
+
+    if (std.mem.eql(u8, cmd, "profile")) {
+        try commands.profile.execute(allocator, args[1..]);
+        return;
+    }
+
+    if (std.mem.eql(u8, cmd, "settings")) {
+        try commands.settings.execute(allocator, args[1..]);
+        return;
+    }
+
+    if (std.mem.eql(u8, cmd, "memory")) {
+        try commands.memory.execute(allocator, args[1..]);
+        return;
+    }
+
+    if (std.mem.eql(u8, cmd, "devices")) {
+        try commands.devices.execute(allocator, args[1..]);
+        return;
+    }
+
+    if (std.mem.eql(u8, cmd, "sessions")) {
+        try commands.sessions.execute(allocator, args[1..]);
+        return;
+    }
+
+    if (std.mem.eql(u8, cmd, "update")) {
+        try commands.update.execute(allocator);
+        return;
+    }
+
+    if (std.mem.eql(u8, cmd, "info")) {
+        try commands.info.execute();
+        return;
+    }
+
+    if (std.mem.eql(u8, cmd, "ping")) {
+        try commands.ping.execute(allocator);
+        return;
+    }
+
+    if (std.mem.eql(u8, cmd, "diagnostics")) {
+        try commands.diagnostics.execute(allocator);
+        return;
+    }
+
+    if (std.mem.eql(u8, cmd, "account")) {
+        try commands.account.execute(allocator, args[1..]);
+        return;
+    }
+
+    if (std.mem.eql(u8, cmd, "exit")) {
+        try commands.exit.execute();
+        return;
+    }
+
+    std.debug.print(
+        "Bilinmeyen komut: {s}\n\n",
+        .{cmd},
+    );
+
+    try commands.help.execute();
 }
