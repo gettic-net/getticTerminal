@@ -1,0 +1,20 @@
+.{
+    .name = "gettic",
+    .version = "stable",
+
+    .fingerprint = 0x7b4d72a6f0d913b1,
+
+    .minimum_zig_version = "0.16.0",
+
+    .dependencies = .{},
+
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "README.md",
+        "LICENSE",
+        "src",
+        "assets",
+        "data",
+    },
+}
